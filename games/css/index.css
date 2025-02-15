@@ -43,11 +43,16 @@
 .button:hover {
     transform: scale(1.035);
 }
-
-
+#title {
+    position: absolute;
+}
 #buttons :nth-child(1) {
+    right: 512px;
+}
+
+#buttons :nth-child(2) {
     top: 43vh;
 }
-#buttons :nth-child(2) {
+#buttons :nth-child(3) {
     top: 50vh;
 }
