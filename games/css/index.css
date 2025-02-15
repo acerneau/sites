@@ -44,7 +44,8 @@
     transform: scale(1.035);
 }
 #title {
-    position: absolute;
+    position: relative;
+    color: #000;
 }
 #buttons :nth-child(1) {
     right: 512px;
