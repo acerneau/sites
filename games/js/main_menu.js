@@ -21,6 +21,7 @@ no_btn_quit.addEventListener('click', (e) => {
 });
 
 yes_btn_quit.addEventListener('click', (e) => {
+    window.open('', '_self', '');
     window.close()
 });
 
