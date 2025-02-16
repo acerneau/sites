@@ -29,5 +29,5 @@ play_btn.addEventListener('click', (e) => {
 });
 
 opt_btn.addEventListener('click', (e) => {
-    document.location.href = '../options_menu.html'
+    document.location.href = './options_menu.html'
 });
