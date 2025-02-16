@@ -1,0 +1,42 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    overflow: hidden;
+    height: 100vh
+}
+
+#container {
+    z-index: -1;
+    position: absolute;
+    top: -150px;
+    left: -25%;
+    width: 140vw;
+    height: 140vh;
+    background: url('../assets/main_menu/background.jpg') no-repeat center/cover;
+    filter: blur(7px);
+}
+#content {
+    position: relative;
+    text-align: center;
+}
+
+#title {
+    position: relative;
+    top: 3vh;
+    z-index: 1;
+    color: white;
+    text-decoration: underline;
+    font-family: 'monospace';
+    font-weight: bold;
+    font-size: 35px;
+}
+
+#quit_btn {
+    position: relative;
+    top: -5vh;
+    left: 47vw;
+}
