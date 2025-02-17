@@ -37,6 +37,13 @@ body{
 
 #quit_btn {
     position: relative;
-    top: -5vh;
+    padding: 5px;
+    top: -1vh;
     left: 47vw;
+    transition: ease-in 0.1s;
+    background-color: green;
+}
+
+#content img:hover {
+    transform: scale(1.3);
 }

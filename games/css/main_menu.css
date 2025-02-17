@@ -79,7 +79,7 @@ Body, html {
     top:54vh;
     grid-row: 2;
 }
-#buttons :nth-child(3){
+/* #buttons :nth-child(3){
     top:65vh;
     grid-row: 3;
 }
@@ -109,4 +109,4 @@ Body, html {
 }
 .button_quit:hover {
     transform: scale(1.03);
-}
+} */
