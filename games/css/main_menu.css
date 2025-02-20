@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: monospace;
 }
 
 .ust {
@@ -79,6 +80,13 @@ Body, html {
     top:54vh;
     grid-row: 2;
 }
+
+#g_btn {
+    position: absolute;
+    right: 0.5vw;
+    top: 0.5vh;
+}
+
 /* #buttons :nth-child(3){
     top:65vh;
     grid-row: 3;
