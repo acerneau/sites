@@ -21,7 +21,7 @@ const g_btn = document.getElementById('g_btn');
 // });
 //
 g_btn.addEventListener('click', (e) => {
-     document.location.href = './webGL/test.html'
+     document.location.href = './WebGl/test.html';
 });
 
 play_btn.addEventListener('click', (e) => {
@@ -29,6 +29,6 @@ play_btn.addEventListener('click', (e) => {
 });
 
 opt_btn.addEventListener('click', (e) => {
-    document.location.href = './options_menu.html'
+    document.location.href = './options_menu.html';
 });
 
