@@ -31,6 +31,12 @@ const JUMP_EXPO = 40;
 const PLAYER_HEIGHT = 1.7;
 const PLAYER_SIZE = 0.8;
 
+/////////////////// HTML \\\\\\\\\\\\\\\\\\\
+
+
+const lightRANGE = document.querySelector('#lightRANGE')
+
+
 /////////////////// SETUP \\\\\\\\\\\\\\\\\\\
 
 const scene = new THREE.Scene();
@@ -46,7 +52,7 @@ const PlayerMESH = new THREE.Mesh(PlayerGEO, PlayerMAT);
 
 camera.add(PlayerMESH)
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true });  
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.setSize(w, h);
@@ -252,6 +258,9 @@ function loop(time) {
 
     light.position.x = 10;
     light.lookAt((0,0,0))
+
+    light.intensity = lightRANGE.value / 10
+    light.frustumCulled = True
 
     performFrustumCulling(camera)
     composer.render();
