@@ -14,10 +14,20 @@
         </canvas>
         <div id="settings-box">
             <span class="settings-box-title">Settings :</span>
+            <br><br>
+            <input type="range" id="X_pos" class="setting slider" min="-1000" max="1000" value="0">
+            <div class="output" id="X_pos_otp"></div>
+            <input type="range" id="Y_pos" class="setting slider" min="-1000" max="1000" value="0">
+            <div class="output" id="Y_pos_otp"></div>
+            <input type="range" id="rotation" class="setting slider" min="0" max="3600" value="0">
+            <div class="output" id="rotation_otp"></div>
+            <input type="range" id="scale" class="setting slider" min="0" max="1000" value="1">
+            <div class="output" id="scale_otp"></div>
         </div>
         <div id="error-box">
             <span class="error-box-title">Error messages :</span>
         </div>
+        <script src="./test_parameters.js"></script>
         <script src="./main.js" type="module"></script>
     </body>
 </html>
