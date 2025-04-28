@@ -261,7 +261,6 @@ function loop(time) {
 
     light.intensity = lightRANGE.value / 10
     light.frustumCulled = True
-    light.
 
     performFrustumCulling(camera)
     composer.render();

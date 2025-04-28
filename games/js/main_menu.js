@@ -3,7 +3,7 @@ const play_btn = document.getElementById('play_btn');
 const g_btn = document.getElementById('g_btn');
 
 play_btn.addEventListener('click', (e) => {
-     document.location.href = './WebGl/BonBuild/index.html';
+     document.location.href = './renderer/index.html';
 });
 
 opt_btn.addEventListener('click', (e) => {
