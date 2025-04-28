@@ -6,6 +6,7 @@ import { FXAAShader } from 'jsm/shaders/FXAAShader.js';
 import Stats from 'three/addons/libs/stats.module.js';
 
 import { BoxShape, SphereShape, ConeShape, PlaneShape } from './shapes.js';
+import { performFrustumCulling } from './Opti.js'
 
 /////////////////// GLOBALS VARS \\\\\\\\\\\\\\\\\\\
 
@@ -105,7 +106,7 @@ shapes.push(box, sphere, cone, ground);
 
 /////////////////// WIREFRAME (ALT + W) \\\\\\\\\\\\\\\\\\\
 
-let wireframeEnabled = false;
+export let wireframeEnabled = false;
 window.addEventListener('keydown', (e) => {
     if (e.altKey && e.key.toLowerCase() === 'w') {
         wireframeEnabled = !wireframeEnabled;
@@ -243,7 +244,6 @@ function loop(time) {
 
     camera.position.copy(newCameraPosition);
 
-    
 
     box.mesh.position.y = Math.tan(time * 0.001);
     sphere.mesh.rotation.y = Math.cos(time * 0.001);
@@ -253,7 +253,7 @@ function loop(time) {
     light.position.x = 10;
     light.lookAt((0,0,0))
 
-
+    performFrustumCulling(camera)
     composer.render();
 }
 

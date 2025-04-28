@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { shapes } from './index.js';
+import { shapes , wireframeEnabled } from './index.js';
 
 export function performFrustumCulling(camera) {
     const frustum = new THREE.Frustum();
@@ -17,7 +17,7 @@ export function performFrustumCulling(camera) {
         const isVisible = frustum.intersectsBox(boundingBox);
 
         mesh.visible = isVisible;
-        shape.wire.visible = isVisible;
+        if (wireframeEnabled) shape.wire.visible = isVisible;
 
     }
 }
