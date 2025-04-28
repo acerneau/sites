@@ -238,7 +238,6 @@ function loop(time) {
     PLAYER_VEL.addScaledVector(moveDirection, ACCELERATION * deltaTime);
 
 
-
     const frictionFactor = Math.exp(-FRICTION * deltaTime);
     PLAYER_VEL.x *= frictionFactor;
     PLAYER_VEL.z *= frictionFactor;
@@ -260,7 +259,7 @@ function loop(time) {
     light.lookAt((0,0,0))
 
     light.intensity = lightRANGE.value / 10
-    light.frustumCulled = True
+    // light.frustumCulled = true
 
     performFrustumCulling(camera)
     composer.render();
