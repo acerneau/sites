@@ -2,20 +2,26 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Electron App</title>
+    <title>Game</title>
     <link rel="stylesheet" href="./css/style.css">
     <script type="importmap">
         {
             "imports": {
                 "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
                 "jsm/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/",
-                "three/addons/libs/stats.module.js": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/libs/stats.module.js"
+                "three/addons/libs/stats.module.js": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/libs/stats.module.js",
+                "noisejs": "https://esm.sh/noisejs@2.1.0",
+                "dat.gui": "https://esm.sh/dat.gui"
             }
         }
     </script>
+        <div id="loading-screen">
+        <div class="spinner"></div>
+        <div class="loading-text">Creating map with PerlinNoise...</div>
+    </div>
 </head>
 <body>
     <script type="module" src="./js/index.js"></script>
-    <input id="lightRANGE" type="range" min="0" max="100" value="20" width="200" height="50" style="position:absolute;left:95.5%;scale: 1.5;border: 0;border-radius:10px;top: 5px;">
+    <a id="displayText"width="300" height="100">
 </body>
 </html>
