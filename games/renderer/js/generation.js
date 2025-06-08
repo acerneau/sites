@@ -4,12 +4,13 @@ const Noise = NoiseModule.Noise;
 
 export function genNoiseMap(terrainWidth, terrainDepth) {
     const noise = new Noise(Math.random());
-
-    const baseFrequency = 0.0035;
-    const baseAmplitude = 80;
+ 
+    const baseFrequency = 0.006;
+    const baseAmplitude = 150;
     const octaves = 7;
-    const persistence = 0.45;
-    const lacunarity = 1.8;
+    const persistence = 0.75;
+    const lacunarity = 1.6;
+    const scale = 0.4;
 
     const terrainVertices = [];
 
@@ -25,8 +26,8 @@ export function genNoiseMap(terrainWidth, terrainDepth) {
             let amplitude = baseAmplitude;
 
             for (let i = 0; i < octaves; i++) {
-                const nx = x * frequency;
-                const nz = z * frequency;
+                const nx = x * frequency * scale;
+                const nz = z * frequency * scale;
 
                 const noiseValue = noise.perlin2(nx, nz);
                 height += noiseValue * amplitude;
