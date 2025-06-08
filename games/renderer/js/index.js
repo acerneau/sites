@@ -4,8 +4,7 @@ import { RenderPass } from 'jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'jsm/postprocessing/ShaderPass.js';
 import { FXAAShader } from 'jsm/shaders/FXAAShader.js';
 import Stats from 'three/addons/libs/stats.module.js';
-import { Sky } from 'jsm/objects/Sky.js';
-import * as dat from 'dat.gui';
+import { GUI } from 'dat.gui'
 
 import { BoxShape, SphereShape, ConeShape, updateObjectVerticies } from './shapes.js';
 import { performFrustumCulling } from './Opti.js'
@@ -17,7 +16,7 @@ import { genNoiseMap } from './generation.js'
 const w = window.innerWidth;
 const h = window.innerHeight;
 
-const FOV = 75;
+const FOV = 75; 
 const ASPECT = w / h;
 const NEAR = 0.1;
 const FAR = 20000;
@@ -43,6 +42,7 @@ const displayText = document.querySelector('#displayText')
 /////////////////// SETUP \\\\\\\\\\\\\\\\\\\
 
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x3e4063)
 
 const camera = new THREE.PerspectiveCamera(FOV, ASPECT, NEAR, FAR);
 camera.position.set(0, 5, -10);
@@ -91,121 +91,14 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 /////////////////// LIGHTS \\\\\\\\\\\\\\\\\\\
 
-
-const sky = new Sky();
-sky.scale.setScalar(10000);
-scene.add(sky);
-
-
-const sunLight = new THREE.DirectionalLight(0xffffff, 1);
-sunLight.castShadow = true;
-sunLight.shadow.mapSize.set(2048, 2048);
-sunLight.shadow.camera.near = 0.1;
-sunLight.shadow.camera.far = 1000;
-scene.add(sunLight);
-
-sunLight.intensity = 4.5;
-
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
-renderer.toneMappingExposure = 1.2;
-
-
-
-const moonLight = new THREE.DirectionalLight(0xaaaaff, 0.1);
-moonLight.castShadow = false;
-scene.add(moonLight);
-
-
-const starGeo = new THREE.BufferGeometry();
-const starCount = 700;
-const starPositions = [];
-
-for (let i = 0; i < starCount; i++) {
-    const radius = 9000 + Math.random() * 7000;
-    const theta = THREE.MathUtils.randFloat(0, Math.PI);
-    const phi = THREE.MathUtils.randFloat(0, 2 * Math.PI);
-
-    const x = radius * Math.sin(theta) * Math.cos(phi);
-    const y = radius * Math.cos(theta);
-    const z = radius * Math.sin(theta) * Math.sin(phi);
-    starPositions.push(x, y, z);
-}
-
-starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
-const starMat = new THREE.PointsMaterial({
-  color: 0xffffff,
-  size: 3,
-  sizeAttenuation: false,
-  depthTest: true,
-  depthWrite: false,
-  transparent: true,
-  opacity: 0.6,
-  blending: THREE.AdditiveBlending,
-});
-const stars = new THREE.Points(starGeo, starMat);
-scene.add(stars);
-
-stars.frustumCulled = false;
-stars.renderOrder = -1;
-
-
-
-const skyUniforms = sky.material.uniforms;
-const sun = new THREE.Vector3();
-const params = {
-    elevation: 45,
-    azimuth: 180,
-    turbidity: 8,
-    rayleigh: 0.1,
-    mieCoefficient: 0.005,
-    mieDirectionalG: 0.6,
-    timeOfDay: 21,
-    autoCycle: true,
-    cycleSpeed: 0.01,
-    enableRaycast: true,
-    enableGodRays: true,
-};
-
-let TimeCycle = params.timeOfDay;
-
-skyUniforms.turbidity.value = params.turbidity
-skyUniforms.rayleigh.value = params.rayleigh
-skyUniforms.mieCoefficient.value = params.mieCoefficient
-skyUniforms.mieDirectionalG.value = params.mieDirectionalG
-
-function updateSky() {
-    const theta = THREE.MathUtils.degToRad(90 - params.elevation);
-    const phi = THREE.MathUtils.degToRad(params.azimuth);
-
-    sun.setFromSphericalCoords(1, theta, phi);
-    sky.material.uniforms['sunPosition'].value.copy(sun);
-    sunLight.position.copy(sun).multiplyScalar(100);
-    moonLight.position.copy(sun).multiplyScalar(-100);
-}
-
-function updateLightingByTime(hour) {
-    const t = (hour % 24) / 24;
-    params.elevation = Math.sin((t - 0.25) * Math.PI * 2) * 90;  
-    params.azimuth = t * 360;
-
-    const daylight = Math.max(0, Math.sin(t * Math.PI));
-
-    moonLight.intensity = 0.2 * (1 - daylight * 0.7);
-    sunLight.intensity = 5 * daylight * 0.7 + 0.1;
-
-    
-    if (params.timeOfDay <= 6 || params.timeOfDay >= 18.5) {
-        stars.material.opacity = THREE.MathUtils.clamp(1.0 - (daylight * 0.7 + 0.4), 0, 1);
-    }else {
-        stars.material.opacity = 0;
-    }
-    updateSky();
-}
-
-
-updateLightingByTime(params.timeOfDay);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(80, 20, 10);
+directionalLight.lookAt(new THREE.Vector3(0,0,0))
+directionalLight.castShadow = true;
+scene.add(directionalLight);
 
 
 /////////////////// SHAPES \\\\\\\\\\\\\\\\\\\
@@ -234,9 +127,22 @@ class Torch {
 
 export const shapes = [];
 
-const terrainWidth = 2000;
+
+async function GetShader(url) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Failed to load shader");
+    return await response.text();
+}
+
+
+
+const terrainWidth = 2000; 
 const terrainDepth = 2000;
 let GroundMesh = new THREE.Mesh();
+
+
+let TerrainVertexShader = NaN
+let TerrainFragmentShader = NaN
 
 
 async function init() {
@@ -264,22 +170,28 @@ async function init() {
             indices.push(topRight, bottomRight, bottomLeft);
         }
     }
-
+ 
     GroundGeo.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
     GroundGeo.setIndex(indices);
     GroundGeo.computeVertexNormals();
 
-    const GroundMat = new THREE.MeshStandardMaterial({
-        color: 0x88cc88,
-        roughness: 0.8,
-        metalness: 0.0,
-        wireframe: false,
-        flatShading: false
+    TerrainVertexShader = await GetShader('./js/Shader/terrain.vert');
+    TerrainFragmentShader = await GetShader('./js/Shader/terrain.frag');
+
+    const GroundMat = new THREE.ShaderMaterial({
+        vertexShader: TerrainVertexShader,
+        fragmentShader: TerrainFragmentShader,
+        uniforms: {
+            minHeight: { value: -50 },
+            maxHeight: { value: 150 }
+        },
+        side: THREE.DoubleSide,
+        wireframe: false
     });
+
 
     GroundMesh.geometry = GroundGeo;
     GroundMesh.material = GroundMat;
-    GroundMesh.position.setY(-50);
 
     scene.add(GroundMesh);
 
@@ -292,8 +204,7 @@ async function init() {
 init();
 
 
-GroundMesh.position.setY(-50)
-scene.add(GroundMesh);
+
 
 
 shapes.forEach(shape => {
@@ -301,34 +212,64 @@ shapes.forEach(shape => {
     scene.add(shape.BB)
 })
 
+
+/////////////////// GUI \\\\\\\\\\\\\\\\\\\
+
+const gui = new GUI({name: "Config"})
+const devFolder = gui.addFolder('Dev')
+const envFolder = gui.addFolder('Environement')
+const dev = {
+    wireColor : 0xe84a4a,
+    background : 0x3e4063,
+    wireframeEnabled : false
+}
+
+
+envFolder.addColor(dev,"background").onChange((e) => {
+    scene.background = new THREE.Color(dev.background)
+});
+
+devFolder.addColor(dev,"wireColor").onChange((e) => {
+    if (dev.wireframeEnabled) {
+        GroundMesh.material = new THREE.MeshBasicMaterial({
+            color: dev.wireColor,
+            wireframe: true
+        });
+    };
+});
+
+devFolder.add(dev,"wireframeEnabled").onChange((e) => {
+    if (dev.wireframeEnabled) {
+        GroundMesh.material = new THREE.MeshBasicMaterial({
+            color: dev.wireColor,
+            wireframe: true
+        });
+    } else {
+         GroundMesh.material = new THREE.ShaderMaterial({
+            vertexShader: TerrainVertexShader,
+            fragmentShader: TerrainFragmentShader,
+            uniforms: {
+                minHeight: { value: -50 },
+                maxHeight: { value: 150 }
+            },
+            side: THREE.DoubleSide,
+            wireframe: false
+        });
+    }
+
+    shapes.forEach(shape => {
+        shape.wire.visible = dev.wireframeEnabled;
+    });
+});
+
+
 /////////////////// WIREFRAME (ALT + W) AND HitBoxes (Alt + C) \\\\\\\\\\\\\\\\\\\
+
 
 export let wireframeEnabled = false;
 let HitBoxesEnabled = false;
 
 window.addEventListener('keydown', (e) => {
-    if (e.altKey && e.key.toLowerCase() === 'w') {
-        wireframeEnabled = !wireframeEnabled;
-
-        if (wireframeEnabled) {
-            GroundMesh.material = new THREE.MeshBasicMaterial({
-                color: 0xe84a4a,
-                wireframe: true
-            });
-        } else {
-            GroundMesh.material = new THREE.MeshStandardMaterial({
-                color: 0x88cc88,
-                roughness: 0.8,
-                metalness: 0.0,
-                wireframe: false,
-                flatShading: false
-            });
-        }
-
-        shapes.forEach(shape => {
-            shape.wire.visible = wireframeEnabled;
-        });
-    }
     if (e.altKey && e.key.toLowerCase() === 'r') {
         camera.position.set(0, 20, 0);
         camera.rotation.set(0, 0, 0);
@@ -443,6 +384,7 @@ function KeyMovement(accelDirection) {
 }
 
 
+
 /////////////////// LOOP \\\\\\\\\\\\\\\\\\\
 let previousTime = performance.now();
 const clock = new THREE.Clock();
@@ -506,9 +448,7 @@ function loop(time) {
    // updatePlayerBoundingBox(camera, PlayerMESH, PlayerBB);
 
     displayText.innerHTML =
-        " Time : " + params.timeOfDay.toFixed(2) +
-        "<br> Map :  [width = " + terrainWidth + ",depth = " + terrainDepth + "]"+
-        "<br> Coords -> x: " + camera.position.x.toFixed(2) +
+        "Coords -> x: " + camera.position.x.toFixed(2) +
         " | y: " + camera.position.y.toFixed(2) +
         " | z: " + camera.position.z.toFixed(2) +
         "<br>Look -> x: " + camera.rotation.x.toFixed(2) +
@@ -518,16 +458,6 @@ function loop(time) {
     performFrustumCulling(camera);
     shapes.forEach(updateObjectVerticies);
     
-    
-    if (params.autoCycle) {
-        TimeCycle += params.cycleSpeed / 40;
-        if (TimeCycle >= 24 || TimeCycle < 0) TimeCycle = 0;
-
-        params.timeOfDay = TimeCycle;
-    }
-    updateLightingByTime(params.timeOfDay);
-    stars.position.copy(camera.position);
-
 
     composer.render();
 }

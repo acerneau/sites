@@ -7,13 +7,14 @@ body {
 }
 
 * {
-        box-sizing: border-box;
+    box-sizing: border-box;
+    user-select: none;
 }
 
 #displayText {
     position:absolute;
     right:1%;
-    top:2%;
+    bottom:2%;
     padding: 15px;
     background-color: rgba(71, 68, 68, 0.385);
     color: rgb(234, 234, 252);
